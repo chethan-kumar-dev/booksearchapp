@@ -1,0 +1,150 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <style>
+        html{
+            scroll-behavior: smooth;
+        }
+        .whole-container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .big-container{
+           width: 400px;
+           text-align: center;
+        }
+        .search{
+            width: 400px;
+            padding: 5px 20px 20px 20px;
+            box-sizing: border-box;
+            background-color: rgb(25, 25, 94);
+            position: sticky;
+            top: 0px;
+            margin-bottom: 20px;
+            border-radius: 20px;
+        }
+         .link{
+            text-decoration: none;
+            background:linear-gradient(to right,rgb(11, 11, 172),rgb(161, 12, 167));
+            padding: 6px;
+            border-radius: 8px;
+            border: none;
+            margin-left: -20px;
+            color: white;
+        } 
+        .butt{
+            background-color: orangered;
+            color: white;
+            font-size: 16px;
+            border-radius: 10px;
+            padding: 6px;
+            border: 2px solid orangered;
+            cursor: pointer;
+        }
+        #inputvalue{
+            padding: 6px;
+            font-size: 16px;
+            border-radius: 10px;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        }
+        #header{
+            color: white;
+            text-transform: uppercase;
+        }
+        .scroll-container{
+            position: fixed;
+            left: 10px;
+            top: 480px;
+            width: 50px;
+            height: 100px;
+        }
+        .scroll-container ul li{
+            list-style-type: none;
+        }
+        .fas{
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background:linear-gradient(to right,rgb(11, 11, 172),rgb(161, 12, 167));
+            text-align: center;
+            font-size: 30px;
+            margin: 26px;
+            padding: 8px;
+            box-sizing: border-box;
+            position: relative;
+            left: -50px;
+            color: white;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body style="background-image: url('https://media.giphy.com/media/xUPGcfzaX9hFFQJYre/giphy.gif');background-attachment: fixed;background-repeat: no-repeat;background-position: center center;background-size: cover;">
+    <div class="whole-container">
+        <div class="big-container">
+            <div class="search">
+                <h4 id="header">search for the best books&#128150;</h4>
+                <input type="text" id="inputvalue">
+                <button type="button" class="butt" onclick="exe() ">search</button>
+            </div>
+            <div id="ta"></div>
+        </div>
+        <div class="scroll-container">
+            <ul>
+                <li><i class='fas fa-angle-double-up' id="up"></i></li>
+                <li><i class='fas fa-angle-double-down' id="down"></i></li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        var ta=document.getElementById("ta");
+        var inputvalue=document.getElementById("inputvalue");
+       document.getElementById('down').onclick=function(){
+           window.scrollBy(0,400)
+       }
+        function getRandomQuote() {
+        
+         return fetch('https://www.googleapis.com/books/v1/volumes?q='+inputvalue.value)
+        .then((response)=> response.json())
+        .then((data) => data)
+        }
+       async function exec()
+        {
+            const a=await getRandomQuote();
+            console.log(a);
+            var cont;
+            for(var i=0;i<a.items.length;i++)
+            {
+                cont =document.createElement("div");
+                var newele=document.createElement("img");
+                newele.style.boxShadow="4px 4px 50px black";
+                var newauthorele=document.createElement("p");
+                 newauthorele.style.color="white";
+                 newauthorele.style.fontSize="18px"
+                var x = document.createElement("a");
+                var t = document.createTextNode("view");
+                x.classList.add("link");
+                x.style.color="white";
+                x.setAttribute("href",String(a.items[i].volumeInfo.infoLink));
+                x.appendChild(t);
+                newele.src=a.items[i].volumeInfo.imageLinks.smallThumbnail+"<br>";
+                newauthorele.innerHTML=a.items[i].volumeInfo.authors+ "--"+a.items[i].volumeInfo.title;
+                cont.appendChild(newauthorele)
+                cont.appendChild(newele)
+                cont.appendChild(x);
+                cont.style.marginBottom="60px"
+                ta.appendChild(cont);
+            }
+            window.scrollBy(0,document.body.scrollHeight)
+        }
+        function exe()
+        {
+            inputvalue.value.trim()==""?alert('please do type in'):exec();
+        }
+    </script>
+</body>
+</html>
